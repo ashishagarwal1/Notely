@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@null"
-        android:hint="ashdgf"
+        android:hint="@string/header"
         android:maxLines="2"
         android:padding="20dp"
         android:textColor="@color/black"
@@ -28,7 +28,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@null"
-        android:hint="ashdgf "
+        android:hint="@string/description"
         android:padding="20dp"
         android:textColor="@color/grey"
         android:textSize="20sp" />
