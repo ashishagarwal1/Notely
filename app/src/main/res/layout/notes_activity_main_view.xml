@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content_frame"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        layout="@layout/activity_notes_action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="100dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/notes_rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="100dp" />
+
+    <Button
+        android:id="@+id/create_note"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/light_grey"
+        android:padding="20dp"
+        android:text="@string/create_note"
+        android:visibility="gone" />
+
+</FrameLayout>
+

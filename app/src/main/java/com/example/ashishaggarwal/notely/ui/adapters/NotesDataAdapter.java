@@ -89,13 +89,13 @@ public class NotesDataAdapter extends RecyclerView.Adapter<NotesDataAdapter.Note
             timestamp = itemView.findViewById(R.id.timestamp);
             loved = itemView.findViewById(R.id.loved);
             favourite = itemView.findViewById(R.id.favourite);
-            loved.setOnClickListener(clickListener);
-            favourite.setOnClickListener(clickListener);
             swipeLayout = itemView.findViewById(R.id.swipe_layout);
             swipeLayout.setShowMode(SwipeLayout.ShowMode.PullOut);
             swipeLayout.addDrag(SwipeLayout.DragEdge.Left, itemView.findViewById(R.id.bottom_wrapper));
             swipeLayout.addSwipeListener(swipeListener);
             swipeLayout.setOnClickListener(clickListener);
+            loved.setOnClickListener(clickListener);
+            favourite.setOnClickListener(clickListener);
         }
     }
 

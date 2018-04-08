@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.example.ashishaggarwal.notely.interfaces.NotesActivityListener;
 import com.example.ashishaggarwal.notely.ui.fragments.NotesEditFragment;
+import com.example.ashishaggarwal.notely.utils.Utils;
 import com.example.ashishaggarwal.notely.viewmodel.NotesViewModel;
 import com.example.ashishaggarwal.notely.R;
 import com.example.ashishaggarwal.notely.room.entities.NotesDataEntity;
@@ -29,6 +30,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class NotesActivity extends AppCompatActivity implements View.OnClickListener, NotesActivityListener {
+
+    private final String NOTES_EDIT_FRAGMENT_TAG = "notesEditFragmentTag";
 
     private List<View> radioList;
 
@@ -42,9 +45,9 @@ public class NotesActivity extends AppCompatActivity implements View.OnClickList
 
     private View filterCircleView;
 
-    private final String NOTES_EDIT_FRAGMENT_TAG = "notesEditFragmentTag";
-
     private View createNoteView;
+
+    private View contentFrame;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,24 +55,41 @@ public class NotesActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_notes);
         notesViewModel =
                 ViewModelProviders.of(this).get(NotesViewModel.class);
+        initializeResources();
+    }
+
+    private void initializeResources() {
         drawerLayout = findViewById(R.id.drawer_layout);
-        drawerLayout.addDrawerListener(drawerListener);
+        createNoteView = findViewById(R.id.create_note);
+        notesRecyclerView = findViewById(R.id.notes_rv);
+        contentFrame = findViewById(R.id.content_frame);
+        filterCircleView = findViewById(R.id.filter_circle);
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            contentFrame.setVisibility(View.GONE);
+        }
+        setRadioGroup();
+        createRecyclerView();
+        placeListeners();
+    }
+
+    private void placeListeners() {
+
         findViewById(R.id.drawer_cross).setOnClickListener(this);
         findViewById(R.id.apply).setOnClickListener(this);
-        createNoteView = findViewById(R.id.create_note);
-        createNoteView.setOnClickListener(this);
-        filterCircleView = findViewById(R.id.filter_circle);
-        findViewById(R.id.filter_circle_fl).setOnClickListener(this);
-        setRadioGroup();
-        notesRecyclerView = findViewById(R.id.notes_rv);
         findViewById(R.id.create_post).setOnClickListener(this);
-        notesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        notesDataAdapter = new NotesDataAdapter(notesViewModel, this);
+        findViewById(R.id.filter_circle_fl).setOnClickListener(this);
+        createNoteView.setOnClickListener(this);
+        drawerLayout.addDrawerListener(drawerListener);
+        notesViewModel.getNotesLiveData().observe(this, onDataChange());
+    }
+
+    private void createRecyclerView() {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(notesRecyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);
+        notesDataAdapter = new NotesDataAdapter(notesViewModel, this);
+        notesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         notesRecyclerView.addItemDecoration(dividerItemDecoration);
         notesRecyclerView.setAdapter(notesDataAdapter);
-        notesViewModel.getNotesLiveData().observe(this, onDataChange());
     }
 
     private Observer<List<NotesDataEntity>> onDataChange() {
@@ -180,7 +200,8 @@ public class NotesActivity extends AppCompatActivity implements View.OnClickList
 
     @Override
     public void openFragment(long createdTs) {
-        createNoteView.setVisibility(View.GONE);
+        contentFrame.setVisibility(View.GONE);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         Fragment fragment = NotesEditFragment.newInstance(createdTs);
         FragmentManager fm = getFragmentManager();
         FragmentTransaction fragmentTransaction = fm.beginTransaction();
@@ -193,8 +214,9 @@ public class NotesActivity extends AppCompatActivity implements View.OnClickList
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
             getFragmentManager().popBackStackImmediate();
-            if (notesDataAdapter.getNotesDataEntities().size() <= 0)
-                createNoteView.setVisibility(View.VISIBLE);
+            contentFrame.setVisibility(View.VISIBLE);
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            Utils.hideSoftKeyboard(this);
         } else super.onBackPressed();
     }
 }
