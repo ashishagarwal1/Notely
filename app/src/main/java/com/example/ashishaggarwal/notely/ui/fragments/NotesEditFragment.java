@@ -84,41 +84,34 @@ public class NotesEditFragment extends Fragment implements View.OnClickListener 
         if (!TextUtils.isEmpty(noteEntity.getDescription())) {
             descView.setText(noteEntity.getDescription());
         }
-        headerView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                textViewUndo.beforeTextChanged(s, start, count);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                textViewUndo.onTextChanged(s, start, count, headerView.getId());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        descView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                textViewUndo.beforeTextChanged(s, start, count);
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                textViewUndo.onTextChanged(s, start, count, descView.getId());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
+        headerView.addTextChangedListener(new CustomTextWatcher(headerView.getId()));
+        descView.addTextChangedListener(new CustomTextWatcher(descView.getId()));
     }
 
+
+    private class CustomTextWatcher implements TextWatcher {
+
+        private int resId;
+
+        private CustomTextWatcher(int resId) {
+            this.resId = resId;
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            textViewUndo.beforeTextChanged(s, start, count);
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            textViewUndo.onTextChanged(s, start, count, resId);
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+
+        }
+    }
 
     public static NotesEditFragment newInstance(long createdTimeStamp) {
         NotesEditFragment fragment = new NotesEditFragment();
