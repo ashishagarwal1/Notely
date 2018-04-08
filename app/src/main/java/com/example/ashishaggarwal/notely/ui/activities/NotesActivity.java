@@ -64,6 +64,9 @@ public class NotesActivity extends AppCompatActivity implements View.OnClickList
         notesRecyclerView = findViewById(R.id.notes_rv);
         contentFrame = findViewById(R.id.content_frame);
         filterCircleView = findViewById(R.id.filter_circle);
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            contentFrame.setVisibility(View.GONE);
+        }
         setRadioGroup();
         createRecyclerView();
         placeListeners();
