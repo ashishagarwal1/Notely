@@ -8,7 +8,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +31,8 @@ import java.util.List;
 
 public class NotesActivity extends AppCompatActivity implements View.OnClickListener, NotesActivityListener {
 
+    private final String NOTES_EDIT_FRAGMENT_TAG = "notesEditFragmentTag";
+
     private List<View> radioList;
 
     private RecyclerView notesRecyclerView;
@@ -44,8 +45,6 @@ public class NotesActivity extends AppCompatActivity implements View.OnClickList
 
     private View filterCircleView;
 
-    private final String NOTES_EDIT_FRAGMENT_TAG = "notesEditFragmentTag";
-
     private View createNoteView;
 
     private View contentFrame;
@@ -56,25 +55,38 @@ public class NotesActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_notes);
         notesViewModel =
                 ViewModelProviders.of(this).get(NotesViewModel.class);
+        initializeResources();
+    }
+
+    private void initializeResources() {
         drawerLayout = findViewById(R.id.drawer_layout);
-        drawerLayout.addDrawerListener(drawerListener);
-        findViewById(R.id.drawer_cross).setOnClickListener(this);
-        findViewById(R.id.apply).setOnClickListener(this);
         createNoteView = findViewById(R.id.create_note);
-        createNoteView.setOnClickListener(this);
+        notesRecyclerView = findViewById(R.id.notes_rv);
         contentFrame = findViewById(R.id.content_frame);
         filterCircleView = findViewById(R.id.filter_circle);
-        findViewById(R.id.filter_circle_fl).setOnClickListener(this);
         setRadioGroup();
-        notesRecyclerView = findViewById(R.id.notes_rv);
+        createRecyclerView();
+        placeListeners();
+    }
+
+    private void placeListeners() {
+
+        findViewById(R.id.drawer_cross).setOnClickListener(this);
+        findViewById(R.id.apply).setOnClickListener(this);
         findViewById(R.id.create_post).setOnClickListener(this);
-        notesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        notesDataAdapter = new NotesDataAdapter(notesViewModel, this);
+        findViewById(R.id.filter_circle_fl).setOnClickListener(this);
+        createNoteView.setOnClickListener(this);
+        drawerLayout.addDrawerListener(drawerListener);
+        notesViewModel.getNotesLiveData().observe(this, onDataChange());
+    }
+
+    private void createRecyclerView() {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(notesRecyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);
+        notesDataAdapter = new NotesDataAdapter(notesViewModel, this);
+        notesRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         notesRecyclerView.addItemDecoration(dividerItemDecoration);
         notesRecyclerView.setAdapter(notesDataAdapter);
-        notesViewModel.getNotesLiveData().observe(this, onDataChange());
     }
 
     private Observer<List<NotesDataEntity>> onDataChange() {

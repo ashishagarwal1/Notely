@@ -34,17 +34,29 @@ public class NotesEditFragment extends Fragment implements View.OnClickListener 
 
         notesViewModel =
                 ViewModelProviders.of((FragmentActivity) getActivity()).get(NotesViewModel.class);
+
+        View view = inflater.inflate(R.layout.fragment_edit_notes, null);
+        initializeResources(view);
+        return view;
+    }
+
+    private void initializeResources(View view) {
         long createdTimeStamp = getArguments().getLong(NOTE_CREATED_TIMESTAMP);
         noteEntity = notesViewModel.getNotesItem(createdTimeStamp);
-        View view = inflater.inflate(R.layout.fragment_edit_notes, null);
-        ((Toolbar) view.findViewById(R.id.my_awesome_toolbar)).setNavigationOnClickListener(nabigationBackClickListener);
+
         headerView = view.findViewById(R.id.header);
         descView = view.findViewById(R.id.desc);
+
+        ((Toolbar) view.findViewById(R.id.my_awesome_toolbar)).setNavigationOnClickListener(nabigationBackClickListener);
         view.findViewById(R.id.save).setOnClickListener(this);
         view.findViewById(R.id.undo).setOnClickListener(this);
-        headerView.setText(TextUtils.isEmpty(noteEntity.getHeader()) ? getString(R.string.header) : noteEntity.getHeader());
-        descView.setText(TextUtils.isEmpty(noteEntity.getDescription()) ? getString(R.string.description) : noteEntity.getDescription());
-        return view;
+
+        if (!TextUtils.isEmpty(noteEntity.getHeader())) {
+            headerView.setText(noteEntity.getHeader());
+        }
+        if (!TextUtils.isEmpty(noteEntity.getDescription())) {
+            descView.setText(noteEntity.getDescription());
+        }
     }
 
     public static NotesEditFragment newInstance(long createdTimeStamp) {
