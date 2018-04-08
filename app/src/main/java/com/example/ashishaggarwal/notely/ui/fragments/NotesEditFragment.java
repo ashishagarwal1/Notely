@@ -37,12 +37,7 @@ public class NotesEditFragment extends Fragment implements View.OnClickListener 
         long createdTimeStamp = getArguments().getLong(NOTE_CREATED_TIMESTAMP);
         noteEntity = notesViewModel.getNotesItem(createdTimeStamp);
         View view = inflater.inflate(R.layout.fragment_edit_notes, null);
-        ((Toolbar) view.findViewById(R.id.my_awesome_toolbar)).setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().onBackPressed();
-            }
-        });
+        ((Toolbar) view.findViewById(R.id.my_awesome_toolbar)).setNavigationOnClickListener(nabigationBackClickListener);
         headerView = view.findViewById(R.id.header);
         descView = view.findViewById(R.id.desc);
         view.findViewById(R.id.save).setOnClickListener(this);
@@ -64,7 +59,6 @@ public class NotesEditFragment extends Fragment implements View.OnClickListener 
         return newInstance(0);
     }
 
-
     private void saveClicked() {
         noteEntity.setDescription(descView.getText().toString());
         noteEntity.setHeader(headerView.getText().toString());
@@ -75,6 +69,18 @@ public class NotesEditFragment extends Fragment implements View.OnClickListener 
         } else {
             notesViewModel.updateNote(noteEntity, true);
         }
+        onBackPressed();
+    }
+
+
+    private View.OnClickListener nabigationBackClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            onBackPressed();
+        }
+    };
+
+    private void onBackPressed() {
         Utils.hideSoftKeyboard(getActivity());
         getActivity().onBackPressed();
     }
