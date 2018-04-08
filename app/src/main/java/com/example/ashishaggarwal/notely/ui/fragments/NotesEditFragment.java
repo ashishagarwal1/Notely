@@ -45,27 +45,26 @@ public class NotesEditFragment extends Fragment implements View.OnClickListener 
 
         View view = inflater.inflate(R.layout.fragment_edit_notes, null);
         initializeResources(view);
-        createUndoTextInstance(savedInstanceState);
+        handleUndoState(savedInstanceState);
         return view;
     }
 
-    private void createUndoTextInstance(final Bundle savedInstanceState) {
-        textViewUndo = new TextViewUndo();
+    private void handleUndoState(final Bundle savedInstanceState) {
+        if (savedInstanceState == null)
+            return;
         Handler handler = new Handler();
-        if (savedInstanceState != null) {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (savedInstanceState == null)
-                        return;
-                    TextViewUndo.EditHistory editHistory = savedInstanceState.getParcelable(HISTORY_OBJECT);
-                    if (editHistory == null)
-                        return;
-                    textViewUndo = new TextViewUndo();
-                    textViewUndo.setmEditHistory(editHistory);
-                }
-            }, 300);
-        }
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (savedInstanceState == null)
+                    return;
+                TextViewUndo.EditHistory editHistory = savedInstanceState.getParcelable(HISTORY_OBJECT);
+                if (editHistory == null)
+                    return;
+                textViewUndo = new TextViewUndo();
+                textViewUndo.setmEditHistory(editHistory);
+            }
+        }, 300);
     }
 
     private void initializeResources(View view) {
@@ -84,6 +83,7 @@ public class NotesEditFragment extends Fragment implements View.OnClickListener 
         if (!TextUtils.isEmpty(noteEntity.getDescription())) {
             descView.setText(noteEntity.getDescription());
         }
+        textViewUndo = new TextViewUndo();
         headerView.addTextChangedListener(new CustomTextWatcher(headerView.getId()));
         descView.addTextChangedListener(new CustomTextWatcher(descView.getId()));
     }
