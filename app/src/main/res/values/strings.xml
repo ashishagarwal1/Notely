@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Notely</string>
+    <string name="hearted">Hearted</string>
+    <string name="favourite">Favourite</string>
+    <string name="poem">Poem</string>
+    <string name="story">Story</string>
+    <string name="apply">APPLY</string>
+    <string name="filter">FILTER</string>
+    <string name="drawer_open">Open</string>
+    <string name="drawer_close">Close</string>
+    <string name="empty">Empty</string>
+    <string name="save">Save</string>
+    <string name="undo">Undo</string>
+    <string name="header">Header</string>
+    <string name="description">Description</string>
+    <string name="delete">Delete</string>
+    <string name="create_note">Create Note</string>
 </resources>
