@@ -6,15 +6,12 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.text.format.DateUtils;
 
 import com.example.ashishaggarwal.notely.R;
 
-import static android.text.format.DateUtils.FORMAT_SHOW_TIME;
-import static android.text.format.DateUtils.SECOND_IN_MILLIS;
-import static android.text.format.DateUtils.WEEK_IN_MILLIS;
-
 public class SplashActivity extends AppCompatActivity {
+
+    private boolean stopped = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,15 +23,29 @@ public class SplashActivity extends AppCompatActivity {
         launchNotesActivity();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        stopped = false;
+    }
+
     private void launchNotesActivity() {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (stopped)
+                    return;
                 Intent intent = new Intent(SplashActivity.this, NotesActivity.class);
                 startActivity(intent);
             }
         }, 1000);
+    }
+
+    @Override
+    protected void onStop() {
+        stopped = true;
+        super.onStop();
     }
 
     @Override
